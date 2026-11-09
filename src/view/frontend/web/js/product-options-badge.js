@@ -11,7 +11,7 @@ define([
 ], function ($, domReady, utils) {
     'use strict';
 
-    var globalOptions = {
+    const globalOptions = {
         config: {},
         parentSelector: '.column.main',
         galleryPlaceholderSelector: '[data-gallery-role=gallery-placeholder]',
@@ -34,12 +34,12 @@ define([
         },
 
         _init: function initProductOptionsBadge() {
-            var self = this;
+            const self = this;
 
             $(self.options.galleryPlaceholderSelector, self.options.parentSelector).on(self.options.galleryLoadedEventName, function() {
                 self.handleAll();
 
-                var observer = new MutationObserver(function(mutations) {
+                const observer = new MutationObserver(function(mutations) {
                     $.each(mutations, function(key, mutation) {
                         $.each(mutation.addedNodes, function(key, addedNode) {
                             if ($(addedNode).attr('id') === 'amasty-main-image') {
@@ -49,7 +49,7 @@ define([
                     });
                 });
 
-                var amastyContainer = document.querySelector('#amasty-main-container');
+                const amastyContainer = document.querySelector('#amasty-main-container');
                 if (amastyContainer) {
                     observer.observe(document.querySelector('#amasty-main-container'), {
                         subtree: true,
@@ -68,7 +68,7 @@ define([
         },
 
         handleAll: function handleAll() {
-            var self = this;
+            const self = this;
 
             $.each(self.options.optionTypes, function(type, selector) {
                 $(selector, self.element).on('change', function() {
@@ -78,7 +78,7 @@ define([
         },
 
         handleOptionChange: function handleOptionChange(type, inputElement) {
-            var self = this;
+            const self = this;
 
             if (type === 'dropdown') {
                 self.handleDropdown(inputElement);
@@ -90,25 +90,25 @@ define([
         },
 
         handleDropdown: function handleDropdown(selectElement) {
-            var self = this;
+            const self = this;
 
-            var optionId = utils.findOptionId(selectElement);
+            const optionId = utils.findOptionId(selectElement);
 
             if (optionId) {
-                var isMultiSelect = selectElement.attr('multiple');
+                const isMultiSelect = selectElement.attr('multiple');
 
                 if (isMultiSelect) {
-                    var optionValueIds = selectElement.val();
+                    let optionValueIds = selectElement.val();
 
                     if (! Array.isArray(optionValueIds)) {
                         optionValueIds = [optionValueIds];
                     }
 
-                    var currentOverlayElements =
+                    const currentOverlayElements =
                         $('.product_custom_option_overlay[data-option-id="' + optionId + '"]');
 
                     currentOverlayElements.each(function() {
-                        var currentOptionValueId = $(this).data('option-value-id');
+                        const currentOptionValueId = $(this).data('option-value-id');
 
                         if ($.inArray(currentOptionValueId, optionValueIds) === -1) {
                             self.remove(optionId, currentOptionValueId);
@@ -121,7 +121,7 @@ define([
                 } else {
                     self.remove(optionId);
 
-                    var optionValueId = selectElement.val();
+                    const optionValueId = selectElement.val();
 
                     if (optionValueId) {
                         self.add(optionId, optionValueId, false);
@@ -133,15 +133,15 @@ define([
         },
 
         handleRadio: function handleRadio(inputElement) {
-            var self = this;
+            const self = this;
 
             if (inputElement.is(':checked')) {
-                var optionId = utils.findOptionId(inputElement);
+                const optionId = utils.findOptionId(inputElement);
 
                 if (optionId) {
                     self.remove(optionId);
 
-                    var optionValueId = inputElement.val();
+                    const optionValueId = inputElement.val();
 
                     if (optionValueId) {
                         self.add(optionId, optionValueId, false);
@@ -153,12 +153,12 @@ define([
         },
 
         handleCheckbox: function handleRadio(inputElement) {
-            var self = this;
+            const self = this;
 
-            var optionId = utils.findOptionId(inputElement);
+            const optionId = utils.findOptionId(inputElement);
 
             if (optionId) {
-                var optionValueId = inputElement.val();
+                const optionValueId = inputElement.val();
 
                 if (optionValueId) {
                     if (inputElement.is(':checked')) {
@@ -173,26 +173,26 @@ define([
         },
 
         add: function addProductOptionsBadge(optionId, optionValueId, isMultiSelect) {
-            var self = this;
+            const self = this;
 
-            var optionConfig = self.options.config[optionId];
+            const optionConfig = self.options.config[optionId];
 
             if (optionConfig) {
-                var optionValuesConfig = optionConfig.values;
+                const optionValuesConfig = optionConfig.values;
 
                 if (optionValuesConfig) {
-                    var optionValueBadgeUrl = optionValuesConfig[optionValueId];
+                    const optionValueBadgeUrl = optionValuesConfig[optionValueId];
 
                     if (optionValueBadgeUrl) {
                         $.each(self.getGalleryIdentifier(), function(key, identifier) {
                             $(identifier, self.options.parentSelector).each(function() {
-                                var imageElement = $(this);
+                                const imageElement = $(this);
 
-                                var overlayElementId = isMultiSelect ?
+                                const overlayElementId = isMultiSelect ?
                                     'product-custom-option-overlay-' + optionId + '-' + optionValueId :
                                     'product-custom-option-overlay-' + optionId;
 
-                                var overlayElement = $('<div>', {
+                                const overlayElement = $('<div>', {
                                     id: overlayElementId,
                                     class: 'product_custom_option_overlay',
                                     'data-option-id': optionId,
@@ -200,7 +200,7 @@ define([
                                 });
                                 overlayElement.appendTo(imageElement);
 
-                                var overlayImageElement = $('<img>', {
+                                const overlayImageElement = $('<img>', {
                                     src: optionValueBadgeUrl,
                                     class: 'product_custom_option_overlay_image'
                                 });
@@ -229,10 +229,10 @@ define([
         },
 
         adjust: function adjustProductOptionsBadge() {
-            var overlayCount = 0;
+            let overlayCount = 0;
 
             $.each($('.product_custom_option_overlay').get().reverse(), function() {
-                var overlayElement = $(this);
+                const overlayElement = $(this);
                 overlayElement.removeClass('product_custom_option_overlay-1');
                 overlayElement.removeClass('product_custom_option_overlay-2');
                 overlayElement.removeClass('product_custom_option_overlay-3');
